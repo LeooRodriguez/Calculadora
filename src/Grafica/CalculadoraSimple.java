@@ -129,34 +129,36 @@ public class CalculadoraSimple extends JFrame {
 		b_calcular.setFont(new Font("Microsoft PhagsPa", Font.BOLD, 12));
 		b_calcular.setBounds(10, 122, 304, 28);
 		panel_resultado.add(b_calcular);
-		
+
 		JButton b_info = new JButton("Informaci\u00F3n");
 		b_info.setFont(new Font("Microsoft PhagsPa", Font.BOLD, 12));
 		b_info.setBounds(0, 225, 324, 28);
 		panel_resultado.add(b_info);
-		
+
 		JLabel l_imagen = new JLabel("");
 		l_imagen.setIcon(new ImageIcon("Img\\Fondo_Juego.jpg"));
 		l_imagen.setBounds(0, 0, 324, 264);
 		panel_resultado.add(l_imagen);
 
 		calculadora= new Calculadora();
-		nombres=calculadora.getNames();
+		nombres=calculadora.getNames();//Pido los nombres a la lógica para ponerlos en el comboBox.
+		JLabel labelRutNoVal;
 		try {
 			calculadora.getPlugins();
 		} catch (InvalidPathException e2) {
-			JOptionPane.showMessageDialog(null,"ERROR: Ruta inválida","Información", 2);
+			labelRutNoVal= new JLabel(e2.getMessage());
+			labelRutNoVal.setFont(new Font("Microsoft PhagsPa", Font.BOLD, 12));
+			JOptionPane.showMessageDialog(null,labelRutNoVal,"Información", 2);
 			System.exit(0);
-			e2.printStackTrace();
 		}
 
 		if(nombres.size()==0) {
-			JOptionPane.showMessageDialog(null,"ERROR: No se detectan plugins","Información", 2);
+			JOptionPane.showMessageDialog(null,"Aviso: No se detectan plugins","Información", 2);
 		}
 		for(int i=0;i<nombres.size();i++) {
 			comboBox.addItem(nombres.get(i));
 		}
-	
+
 
 
 		b_calcular.addMouseListener(new MouseAdapter() {
@@ -166,35 +168,46 @@ public class CalculadoraSimple extends JFrame {
 				int num2;
 				double toRet;
 				String plugin;
+				JLabel labelOpNoVal;
+				JLabel labelNumNoVal = new JLabel("ERROR: Números no válidos");
+				labelNumNoVal.setFont(new Font("Microsoft PhagsPa", Font.BOLD, 12));
+				
 				
 				plugin= (String) comboBox.getItemAt(comboBox.getSelectedIndex());
-				
 				try {
-				num1= Integer.parseInt(numero1.getText());
-				num2= Integer.parseInt(numero2.getText());
-				toRet=calculadora.runPlugins(plugin, num1, num2);
-				resultado.setText(""+toRet);
+					num1= Integer.parseInt(numero1.getText());
+					num2= Integer.parseInt(numero2.getText());
+					toRet=calculadora.runPlugins(plugin, num1, num2);
+					resultado.setText(""+toRet);
+					
 				} catch (NumberFormatException excepcion) {
-					JOptionPane.showMessageDialog(contentPane,"ERROR: Números no válidos","Información", 2);
+					JOptionPane.showMessageDialog(contentPane,labelNumNoVal,"Información", 2);
 				} catch (InvalidOperationException e1) {
-					JOptionPane.showMessageDialog(null,"ERROR: Verifique los números ingresados","Información", 1);
-					e1.printStackTrace();
+					labelOpNoVal = new JLabel(e1.getMessage());
+					labelOpNoVal.setFont(new Font("Microsoft PhagsPa", Font.BOLD, 12));
+					JOptionPane.showMessageDialog(null,labelOpNoVal,"Información", 1);
 				}
 			}
 		});
-		
+
 		b_actualizar.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {			    
+			public void mouseClicked(MouseEvent e) {
+				
 				comboBox.removeAllItems();
-				calculadora.limpiarNombres(); //Preguntar si es correcto esto a Martín.
+				calculadora.limpiarNombres();
 				nombres=calculadora.getNames();
+				
+				
 				try {
 					calculadora.getPlugins();
 				} catch (InvalidPathException e1) {
-					JOptionPane.showMessageDialog(null,"ERROR: Ruta inválida","Información", 2);
+					JOptionPane.showMessageDialog(null,e1.getMessage(),"Información", 2);
 					System.exit(0);
-					e1.printStackTrace();
+				}
+				
+				if(nombres.size()==0) {
+					JOptionPane.showMessageDialog(null,"Aviso: No se detectan plugins","Información", 2);
 				}
 
 				for(int i=0;i<nombres.size();i++) {
@@ -202,7 +215,7 @@ public class CalculadoraSimple extends JFrame {
 				}
 			}
 		});
-		
+
 		b_info.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -222,7 +235,7 @@ public class CalculadoraSimple extends JFrame {
 				}
 			}
 		});
-		
-}
-	
+
+	}
+
 }

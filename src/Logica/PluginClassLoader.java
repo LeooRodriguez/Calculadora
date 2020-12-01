@@ -3,7 +3,9 @@ package Logica;
 import java.io.*;
 
 public class PluginClassLoader extends ClassLoader {
-
+	/**
+	 * Este código fue sacado de la pagina:https://javaranch.com/journal/200607/Plugins.html
+	 */
 	private File directory;
 
 	public PluginClassLoader (File dir) {

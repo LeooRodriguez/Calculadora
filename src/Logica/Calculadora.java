@@ -7,13 +7,15 @@ import java.util.*;
 import javax.swing.JOptionPane;
 
 public class Calculadora {
-
+/**
+ * Gran parte de este código fue sacado de la pagina:https://javaranch.com/journal/200607/Plugins.html
+ */
 	private ArrayList plugins;
 	private File directory;
 	private ArrayList<String> pluginsNames;
 
 	public Calculadora () {
-		directory=new File("./bin/plugins");
+		directory=new File("./plugins");
 		plugins= new ArrayList();
 		pluginsNames= new ArrayList();
 	}
@@ -49,16 +51,17 @@ public class Calculadora {
 				throw new InvalidPathException("ERROR: Ruta inválida");
 			}
 		} catch (Exception ex) {
-			System.err.println("Does not contain a valid PluginFunction class.");
+			throw new InvalidPathException("ERROR: Ruta inválida");
+
 		}
 	}
-/**
- * Calcula un resultado en base a un plugins.
- * @param nombrePlug Nombre del complemento a calcular el resultado.
- * @param num1 Entero a utilizar en la operación.
- * @param num2 Entero a utilizar en la operación.
- * @return Double resultado de calcular la operación de dicho plugins.
- */
+	/**
+	 * Calcula un resultado en base a un plugins.
+	 * @param nombrePlug Nombre del complemento a calcular el resultado.
+	 * @param num1 Entero a utilizar en la operación.
+	 * @param num2 Entero a utilizar en la operación.
+	 * @return Double resultado de calcular la operación de dicho plugins.
+	 */
 	public double runPlugins(String nombrePlug,int num1,int num2)throws InvalidOperationException{
 		double toRet=0;
 		int cantidad=plugins.size();
@@ -72,20 +75,22 @@ public class Calculadora {
 			if(nombre.equals(nombrePlug)) {
 				pf.setParameters(num1,num2);
 				if(pf.hasError()) {
-					throw new InvalidOperationException("ERROR:  ");
+					throw new InvalidOperationException("ERROR: Operación inválida con los operandos ingresados ");
 				}
-				toRet=pf.getResult();
-				esta=true;
+				else {
+					toRet=pf.getResult();
+					esta=true;
+				}
 			}
 			i++;
 		}
 		return toRet;
 	}
 
-/**
- * Retorna la lista de nombres de plugins.
- * @return
- */
+	/**
+	 * Retorna la lista de nombres de plugins.
+	 * @return
+	 */
 	public ArrayList<String> getNames(){
 		return pluginsNames;
 	}
@@ -95,6 +100,6 @@ public class Calculadora {
 	 */
 	public void limpiarNombres() {
 		pluginsNames.clear();
-			
+
 	}
 }
